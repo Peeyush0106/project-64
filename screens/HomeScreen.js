@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Header } from 'react-native-elements';
 import dictionary from '../database';
 export default class HomeScreen extends Component{
@@ -16,19 +16,20 @@ export default class HomeScreen extends Component{
   }
 
   getWord=(text)=>{
-    var text = text.toLowerCase()
+    text = text.toLowerCase()
     try{
       var word = dictionary[text]["word"]
 
-      var lexicalCategory = dictionary["lexicalCategory"]
+      var lexicalCategory = dictionary[text]["lexicalCategory"]
 
-      var definition = dictionary["definition"]
-      
-      this.setState({
-        "word" : word,
-        "lexicalCategory" : lexicalCategory,
-        "definition" : definition
-      })
+      var definition = dictionary[text]["definition"]
+
+      var data = {
+        word : word,
+        lexicalCategory : lexicalCategory,
+        definition : definition
+      }
+      this.setState(data);
     }
     catch(err){
       alert("Sorry This word is not available for now")
@@ -43,7 +44,7 @@ export default class HomeScreen extends Component{
     return(
       <View style={{flex:1, borderWidth:2}}>
         <Header
-          backgroundColor={'purple'}
+          backgroundColor={'blue'}
           centerComponent={{
             text: 'Pocket Dictionary',
             style: { color: '#fff', fontSize: 20 },
@@ -59,7 +60,7 @@ export default class HomeScreen extends Component{
                 word  : "Loading...",
                 lexicalCategory :'',
                 examples : [],
-                defination : ""
+                definition : ""
               });
             }}
             value={this.state.text}
@@ -71,7 +72,7 @@ export default class HomeScreen extends Component{
               this.setState({ isSearchPressed: true });
               this.getWord(this.state.text)
             }}>
-            <Text style={styles.searchText}>Search</Text>
+            <Image source={require("../assets/search-icon.png")} style={{ width: 60, height: 60, margin: "auto", alignSelf: "center" }} />
           </TouchableOpacity>
         </View>
         <View style={styles.outputContainer}>
@@ -89,22 +90,19 @@ export default class HomeScreen extends Component{
                   <View style={styles.detailsContainer}>
                     <Text style={styles.detailsTitle}> Word :{" "} </Text>
                     <Text style={{fontSize:18 }}>
-                      {/*Display the word here*/}
                       {this.state.word}
                     </Text>
                   </View>
                   <View style={styles.detailsContainer}>
                     <Text style={styles.detailsTitle}> Type :{" "}  </Text>
                     <Text style={{fontSize:18}}>
-                      {/*Display the category here*/}
-                      {this.state.word}
+                      {this.state.lexicalCategory}
                     </Text>
                   </View>
                   <View style={{flexDirection:'row',flexWrap: 'wrap'}}>
                     <Text style={styles.detailsTitle}> Definition :{" "} </Text>
                     <Text style={{ fontSize:18}}>
-                    {/*Display the definition here*/}
-                      {this.state.word}
+                      {this.state.definition}
                     </Text>
                   </View>
                 </View>
@@ -124,20 +122,22 @@ const styles = StyleSheet.create({
     justifyContent:'center'
   },
   inputBox: {
-    width: '80%',
-    alignSelf: 'center',
-    height: 40,
+    width: '75%',
+    position: "absolute",
+    left: 0,
+    height: 60,
+    fontSize: "35px",
     textAlign: 'center',
     borderWidth: 4,
+    marginTop: "50%"
   },
   searchButton: {
-    width: '40%',
-    height: 40,
     justifyContent: 'center',
+    position: "absolute",
+    right: 0,
     alignItems: 'center',
     margin: 10,
-    borderWidth: 2,
-    borderRadius: 10,
+    marginTop: "50%"
   },
   searchText:{
     fontSize: 20,
@@ -145,7 +145,8 @@ const styles = StyleSheet.create({
   },
   outputContainer:{
     flex:0.7,
-    alignItems:'center'
+    alignItems:'center',
+    marginTop: "30%",
   },
   detailsContainer:{
     flexDirection:'row',
